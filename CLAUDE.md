@@ -1,11 +1,11 @@
-# qq - Quick Note CLI Tool
+# jjot - Quick Note CLI Tool
 
 A minimal CLI for capturing thoughts instantly from the terminal.
 
 ## Usage
 
 ```bash
-qq
+jj
 Note: your note here
 ```
 
@@ -20,7 +20,7 @@ Note: your note here
 ```markdown
 ---
 
-**Fri Dec 27 · 14:32**
+**Fri Dec 27 · 2:32 PM EST**
 
 your note here
 ```
@@ -31,7 +31,7 @@ your note here
 |-------|--------|---------|
 | Day | Abbreviated weekday | `Fri` |
 | Date | Month Day | `Dec 27` |
-| Time | 24h HH:MM | `14:32` |
+| Time | 12h with timezone | `2:32 PM EST` |
 
 The horizontal rule (`---`) separates notes visually in Obsidian.
 
@@ -39,19 +39,19 @@ The horizontal rule (`---`) separates notes visually in Obsidian.
 
 The target file path should be configurable via:
 
-1. Environment variable: `QQ_FILE`
+1. Environment variable: `JJ_FILE`
 2. Default: `~/Documents/secondbrain/Quick Notes.md`
 
 ## Implementation
 
-- Language: Bash script or small Go/Rust binary
+- Language: Bash script
 - Single file, no dependencies
 - Create the target file if it doesn't exist
 - Append a newline after each note for clean spacing
 
 ## Install
 
-Place `qq` in `~/.local/bin/` or another directory in `$PATH`.
+Place `jj` in `~/.local/bin/` or another directory in `$PATH`.
 
 ## Edge Cases
 
