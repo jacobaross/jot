@@ -1,0 +1,41 @@
+#!/bin/bash
+
+# qq - Quick Note CLI Tool
+# Appends notes to a single file with minimal timestamp metadata
+
+set -e
+
+# Configuration
+QQ_FILE="${QQ_FILE:-$HOME/Documents/secondbrain/Quick Notes.md}"
+
+# Get note content from all arguments
+note="$*"
+
+# Check for empty input
+if [[ -z "$note" ]]; then
+    echo "Usage: qq <note>"
+    echo "Example: qq hello world"
+    exit 1
+fi
+
+# Check if target directory exists
+target_dir="$(dirname "$QQ_FILE")"
+if [[ ! -d "$target_dir" ]]; then
+    echo "Error: Directory does not exist: $target_dir"
+    exit 1
+fi
+
+# Format timestamp: Fri Dec 27 · 14:32
+timestamp="$(date '+%a %b %-d · %H:%M')"
+
+# Append note to file
+{
+    echo ""
+    echo "---"
+    echo ""
+    echo "**$timestamp**"
+    echo ""
+    echo "$note"
+} >> "$QQ_FILE"
+
+echo "Note added."
