@@ -1,34 +1,71 @@
 #!/bin/bash
 
 # jj - jjot Quick Note CLI Tool
-# Appends notes to a single file with minimal timestamp metadata
+# Appends notes to a single file, or creates new notes with -n flag
 
 set -e
 
 # Configuration
 JJ_FILE="${JJ_FILE:-$HOME/Documents/secondbrain/Quick Notes.md}"
+JJ_DIR="${JJ_DIR:-$(dirname "$JJ_FILE")}"
 
-# Prompt for note
+# Format timestamp
+timestamp="$(date '+%a %b %-d · %-I:%M %p %Z')"
+
+# Check if target directory exists
+if [[ ! -d "$JJ_DIR" ]]; then
+    echo "Error: Directory does not exist: $JJ_DIR"
+    exit 1
+fi
+
+# New note mode
+if [[ "$1" == "-n" || "$1" == "new" ]]; then
+    printf "Title: "
+    read -r title
+
+    if [[ -z "$title" ]]; then
+        echo "No title, nothing created."
+        exit 1
+    fi
+
+    printf "Note: "
+    read -r body
+
+    # Sanitize title for filename (remove special chars, replace spaces)
+    filename=$(echo "$title" | tr -cd '[:alnum:] ._-' | sed 's/  */ /g')
+    filepath="$JJ_DIR/$filename.md"
+
+    # Check if file already exists
+    if [[ -f "$filepath" ]]; then
+        echo "Error: File already exists: $filepath"
+        exit 1
+    fi
+
+    # Create new note
+    {
+        echo "# $title"
+        echo ""
+        if [[ -n "$body" ]]; then
+            echo "$body"
+            echo ""
+        fi
+        echo "---"
+        echo "*$timestamp*"
+    } > "$filepath"
+
+    echo "Created: $filename.md"
+    exit 0
+fi
+
+# Default: append to Quick Notes
 printf "Note: "
 read -r note
 
-# Check for empty input
 if [[ -z "$note" ]]; then
     echo "Empty note, nothing added."
     exit 1
 fi
 
-# Check if target directory exists
-target_dir="$(dirname "$JJ_FILE")"
-if [[ ! -d "$target_dir" ]]; then
-    echo "Error: Directory does not exist: $target_dir"
-    exit 1
-fi
-
-# Format timestamp: Fri Dec 27 · 2:32 PM EST
-timestamp="$(date '+%a %b %-d · %-I:%M %p %Z')"
-
-# Append note to file
 {
     echo ""
     echo "---"
